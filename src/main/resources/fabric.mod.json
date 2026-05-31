@@ -1,27 +1,27 @@
 {
 	"schemaVersion": 1,
-	"id": "reroller",
+	"id": "themis",
 	"version": "${version}",
-	"name": "Reroller",
+	"name": "Themis",
 	"description": "Standardizes mob drops, block drops, and some other forms of RNG, and allows configurable rerolling of specific parts.",
 	"authors": [
 		"DuncanRuns"
 	],
 	"contact": {
-		"homepage": "https://github.com/DuncanRuns/Reroller/",
-		"sources": "https://github.com/DuncanRuns/Reroller/",
-		"issues": "https://github.com/DuncanRuns/Reroller/issues"
+		"homepage": "https://github.com/DuncanRuns/Themis/",
+		"sources": "https://github.com/DuncanRuns/Themis/",
+		"issues": "https://github.com/DuncanRuns/Themis/issues"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/reroller/icon.png",
+	"icon": "assets/themis/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.duncanruns.reroller.RerollerMod"
+			"me.duncanruns.themis.ThemisMod"
 		]
 	},
 	"mixins": [
-		"reroller.mixins.json"
+		"themis.mixins.json"
 	],
 	"depends": {
 		"minecraft": "~1.16.1"
