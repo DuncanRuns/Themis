@@ -1,7 +1,7 @@
 package me.duncanruns.themis;
 
 import me.duncanruns.themis.mixinint.RerollerServer;
-import me.duncanruns.themis.mixinint.RerollerTagOwner;
+import me.duncanruns.themis.mixinint.ThemisTagOwner;
 import me.duncanruns.themis.random.CountedRandom;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +20,7 @@ public class SpawnerManager {
     }
 
     public static SpawnerManager get(MinecraftServer server) {
-        return ((RerollerServer) server).reroller$getSpawnerManager();
+        return ((RerollerServer) server).themis$getSpawnerManager();
     }
 
     public boolean shouldSpawn(String entityName, int spawnDelay) {
@@ -42,7 +42,7 @@ public class SpawnerManager {
     }
 
     public void load(MinecraftServer server) {
-        CompoundTag tag = ((RerollerTagOwner) server.getSaveProperties()).reroller$getTag();
+        CompoundTag tag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
         if (!tag.contains("SpawnerManager")) return;
         CompoundTag spawnerTag = tag.getCompound("SpawnerManager");
         spawnerTag.getKeys().forEach(s -> nextSpawnTimes.put(s, spawnerTag.getInt(s)));

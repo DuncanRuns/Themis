@@ -4,7 +4,7 @@ import me.duncanruns.themis.RNGManager;
 import me.duncanruns.themis.SpawnerManager;
 
 public interface RerollerServer {
-    RNGManager reroller$getRNGManager();
+    RNGManager themis$getRNGManager();
 
-    SpawnerManager reroller$getSpawnerManager();
+    SpawnerManager themis$getSpawnerManager();
 }

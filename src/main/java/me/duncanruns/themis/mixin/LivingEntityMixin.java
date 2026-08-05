@@ -23,7 +23,7 @@ public abstract class LivingEntityMixin extends Entity {
     // Implementation warning: injecting at the invoke of builder.build and LocalRef replacing the builder works in dev
     // but not in prod, so things are a little funky around here.
     @WrapOperation(method = "dropLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/context/LootContext$Builder;build(Lnet/minecraft/loot/context/LootContextType;)Lnet/minecraft/loot/context/LootContext;"))
-    private LootContext useRerollerRandom(LootContext.Builder instance, LootContextType type, Operation<LootContext> original, @Local Identifier lootTable) {
+    private LootContext replaceRandom(LootContext.Builder instance, LootContextType type, Operation<LootContext> original, @Local Identifier lootTable) {
         return original.call(instance.random(RNGManager.getRandom(getServer(), lootTable.toString())), type);
     }
 }

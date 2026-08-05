@@ -3,7 +3,7 @@ package me.duncanruns.themis.mixin;
 import me.duncanruns.themis.RNGManager;
 import me.duncanruns.themis.SpawnerManager;
 import me.duncanruns.themis.mixinint.RerollerServer;
-import me.duncanruns.themis.mixinint.RerollerTagOwner;
+import me.duncanruns.themis.mixinint.ThemisTagOwner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,7 +39,7 @@ public abstract class MinecraftServerMixin implements RerollerServer {
         CompoundTag rerollerTag = new CompoundTag();
         rerollerTag.put("RNGManager", rngManager.getTag());
         rerollerTag.put("SpawnerManager", spawnerManager.getTag());
-        ((RerollerTagOwner) thisServer.getSaveProperties()).reroller$setTag(rerollerTag);
+        ((ThemisTagOwner) thisServer.getSaveProperties()).themis$setTag(rerollerTag);
     }
 
     @Inject(method = "tickWorlds", at = @At("HEAD"))
@@ -50,12 +50,12 @@ public abstract class MinecraftServerMixin implements RerollerServer {
 
 
     @Override
-    public RNGManager reroller$getRNGManager() {
+    public RNGManager themis$getRNGManager() {
         return rngManager;
     }
 
     @Override
-    public SpawnerManager reroller$getSpawnerManager() {
+    public SpawnerManager themis$getSpawnerManager() {
         return spawnerManager;
     }
 }

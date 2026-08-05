@@ -2,7 +2,7 @@ package me.duncanruns.themis;
 
 import com.google.gson.JsonObject;
 import me.duncanruns.themis.mixinint.RerollerServer;
-import me.duncanruns.themis.mixinint.RerollerTagOwner;
+import me.duncanruns.themis.mixinint.ThemisTagOwner;
 import me.duncanruns.themis.random.CountedRandom;
 import me.duncanruns.themis.rerollers.Reroller;
 import me.duncanruns.themis.rerollers.SkullReroller;
@@ -23,7 +23,7 @@ public class RNGManager {
     private final long worldSeed;
 
     public static RNGManager get(MinecraftServer server) {
-        return ((RerollerServer) server).reroller$getRNGManager();
+        return ((RerollerServer) server).themis$getRNGManager();
     }
 
     /**
@@ -63,7 +63,7 @@ public class RNGManager {
 
     public void load(MinecraftServer server) {
         Set<String> alreadyLoaded = new HashSet<>();
-        CompoundTag rerollerTag = ((RerollerTagOwner) server.getSaveProperties()).reroller$getTag();
+        CompoundTag rerollerTag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
         if (rerollerTag.contains("RNGManager")) {
             CompoundTag tag = rerollerTag.getCompound("RNGManager");
             tag.getKeys()
