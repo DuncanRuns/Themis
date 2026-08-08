@@ -88,6 +88,9 @@ public class ThemisConfigSelectionScreen extends Screen {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
         this.configListWidget.render(matrices, mouseX, mouseY, delta);
+        if (this.configListWidget.children().isEmpty()) {
+            this.drawCenteredString(matrices, this.textRenderer, "No configs found.", width / 2, (this.height - 19 - textRenderer.fontHeight) / 2, 0xFFFFFF);
+        }
         super.render(matrices, mouseX, mouseY, delta);
         this.drawCenteredText(matrices, this.textRenderer, this.title, width / 2, 15, 0xFFFFFF);
         this.drawCenteredString(matrices, this.textRenderer, "Select the config file you want to use.", width / 2, 30, 0xFFFFFF);
