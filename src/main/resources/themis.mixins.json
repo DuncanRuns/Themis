@@ -24,6 +24,7 @@
     "CreateWorldScreenMixin",
     "LevelLoadingScreenMixin",
     "MoreOptionsDialogAccessor",
+    "MoreOptionsDialogMixin",
     "TitleScreenMixin"
   ]
 }
