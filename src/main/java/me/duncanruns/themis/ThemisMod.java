@@ -31,6 +31,7 @@ public class ThemisMod implements ModInitializer {
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
     private static final Path SELECTED_FILE_PATH = CONFIG_DIR.resolve("selected.txt");
 
+    public static boolean temporaryConfigLoaded = false;
     // Configurable
     public static final Map<String, JsonObject> REROLLER_CONFIGS = new HashMap<>();
     public static final Map<String, Long> PRE_SET_SEEDS = new HashMap<>();
@@ -82,6 +83,7 @@ public class ThemisMod implements ModInitializer {
         clearConfig();
         Optional<String> selectedOpt = getSelectedFileName();
         if (selectedOpt.isPresent()) loadConfig(selectedOpt.get());
+        temporaryConfigLoaded = false;
     }
 
     public static void loadConfig(String fileName) throws IOException {
@@ -114,6 +116,7 @@ public class ThemisMod implements ModInitializer {
      * Returns number of warnings/errors encountered
      */
     public static int loadConfigString(String config) {
+        clearConfig();
         int out = 0;
         JsonObject configJson = new Gson().fromJson(config, JsonObject.class);
         if (configJson.has("skull_rerollers"))

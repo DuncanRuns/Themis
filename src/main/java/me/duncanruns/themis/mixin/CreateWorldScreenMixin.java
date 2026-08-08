@@ -41,5 +41,6 @@ public abstract class CreateWorldScreenMixin {
         String toImport = input.substring(tipbIndex + ";tipb:".length());
         String configContents = PastebinUtil.getPastebinContents(PastebinUtil.clean(toImport));
         ThemisMod.loadConfigString(configContents);
+        ThemisMod.temporaryConfigLoaded = true;
     }
 }

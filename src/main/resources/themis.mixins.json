@@ -23,6 +23,7 @@
   "client": [
     "CreateWorldScreenMixin",
     "LevelLoadingScreenMixin",
-    "MoreOptionsDialogAccessor"
+    "MoreOptionsDialogAccessor",
+    "TitleScreenMixin"
   ]
 }
