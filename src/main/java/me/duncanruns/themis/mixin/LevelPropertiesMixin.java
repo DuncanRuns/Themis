@@ -2,6 +2,7 @@ package me.duncanruns.themis.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Dynamic;
+import me.duncanruns.themis.ThemisMod;
 import me.duncanruns.themis.mixinint.ThemisTagOwner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,17 +22,16 @@ public abstract class LevelPropertiesMixin implements ThemisTagOwner {
     @Inject(method = "method_29029", at = @At("RETURN"))
     private static void onReadLevelDat(CallbackInfoReturnable<LevelProperties> cir, @Local(argsOnly = true) Dynamic<Tag> dynamic) {
         CompoundTag mainTag = ((CompoundTag) dynamic.getValue());
-        if (mainTag.getKeys().contains("Themis")) {
+        if (mainTag.getKeys().contains(ThemisMod.MOD_ID)) {
             LevelProperties lp = cir.getReturnValue();
-            ((LevelPropertiesMixin) (Object) lp).themisTag = mainTag.getCompound("Themis");
+            ((LevelPropertiesMixin) (Object) lp).themisTag = mainTag.getCompound(ThemisMod.MOD_ID);
         }
     }
 
     @Inject(method = "updateProperties", at = @At("TAIL"))
     private void onSaveLevelDat(CallbackInfo ci, @Local(argsOnly = true, ordinal = 0) CompoundTag compoundTag) {
-        compoundTag.put("Themis", themisTag);
+        compoundTag.put(ThemisMod.MOD_ID, themisTag);
     }
-
 
     @Override
     public void themis$setTag(CompoundTag tag) {

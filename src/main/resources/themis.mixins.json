@@ -8,6 +8,7 @@
     "LevelPropertiesMixin",
     "LivingEntityMixin",
     "LootManagerMixin",
+    "MinecraftClientAccessor",
     "MinecraftServerMixin",
     "MobSpawnerLogicMixin",
     "PiglinBrainMixin",
@@ -20,6 +21,8 @@
     "requireAnnotations": true
   },
   "client": [
-    "LevelLoadingScreenMixin"
+    "CreateWorldScreenMixin",
+    "LevelLoadingScreenMixin",
+    "MoreOptionsDialogAccessor"
   ]
 }

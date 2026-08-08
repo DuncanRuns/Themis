@@ -7,6 +7,9 @@ import me.duncanruns.themis.random.CountedRandom;
 import me.duncanruns.themis.rerollers.Reroller;
 import me.duncanruns.themis.rerollers.SkullReroller;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
@@ -19,6 +22,7 @@ import java.util.*;
 public class RNGManager {
     private final Map<String, CountedRandom> randoms = new HashMap<>();
     private final Set<String> failedRerollers = new HashSet<>();
+    private String[] skullRerollers = new String[]{"skulls/1", "skulls/2", "skulls/3", "skulls/4"};
     private volatile Reroller currentlyRerolling = null;
     private final long worldSeed;
 
@@ -32,6 +36,10 @@ public class RNGManager {
      */
     public static CountedRandom getRandom(MinecraftServer server, String key) {
         return get(server).getRandom(key);
+    }
+
+    public static CountedRandom getSkullRandom(MinecraftServer server, int looting) {
+        return get(server).getSkullRandom(looting);
     }
 
     // Not supposed to be cryptographically strong, just supposed to somewhat mix things up so similar loot tables don't
@@ -63,20 +71,36 @@ public class RNGManager {
 
     public void load(MinecraftServer server) {
         Set<String> alreadyLoaded = new HashSet<>();
-        CompoundTag rerollerTag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
-        if (rerollerTag.contains("RNGManager")) {
-            CompoundTag tag = rerollerTag.getCompound("RNGManager");
+        CompoundTag themisTag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
+        if (themisTag.contains("RNGManager")) {
+            CompoundTag tag = themisTag.getCompound("RNGManager");
             tag.getKeys()
                     .forEach(s -> {
                         randoms.put(s, CountedRandom.fromTag(tag.getCompound(s)));
                         alreadyLoaded.add(s);
                     });
         }
-        new HashSet<>(Arrays.asList(ThemisMod.SKULL_REROLLERS)).forEach(s -> {
-            if (alreadyLoaded.contains(s)) return;
-            if (!ThemisMod.REROLLER_CONFIGS.containsKey(s)) return;
-            JsonObject rerollerConfigEntry = ThemisMod.REROLLER_CONFIGS.get(s);
-            reroll(server, s, rerollerConfigEntry, new SkullReroller(ThemisMod.getLootingForSkullRngId(s)));
+        if (themisTag.contains("SkullRerollers")) {
+            ListTag tag = themisTag.getList("SkullRerollers", 8);
+            skullRerollers = new String[4];
+            for (int i = 0; i < tag.size(); i++) {
+                skullRerollers[i] = tag.asString();
+            }
+        } else {
+            skullRerollers = ThemisMod.SKULL_REROLLERS;
+            new HashSet<>(Arrays.asList(skullRerollers)).forEach(s -> {
+                if (alreadyLoaded.contains(s)) return;
+                if (!ThemisMod.REROLLER_CONFIGS.containsKey(s)) return;
+                JsonObject rerollerConfigEntry = ThemisMod.REROLLER_CONFIGS.get(s);
+                int i = ThemisMod.getLootingForSkullRngId(s);
+                reroll(server, s, rerollerConfigEntry, new SkullReroller(i));
+            });
+        }
+
+
+        ThemisMod.PRE_SET_SEEDS.forEach((key, seed) -> {
+            if (alreadyLoaded.contains(key)) return;
+            randoms.put(key, new CountedRandom(seed, 0));
         });
 
         ThemisMod.REROLLER_CONFIGS.forEach((key, rerollerConfigEntry) -> {
@@ -108,15 +132,16 @@ public class RNGManager {
         }
     }
 
-    public @NotNull CompoundTag getTag() {
+    public @NotNull Tag getRandomsTag() {
         CompoundTag tag = new CompoundTag();
-        Set<String> alwaysKeep = ThemisMod.REROLLER_CONFIGS.keySet();
-        randoms.keySet().removeIf(s -> {
-            if (alwaysKeep.contains(s)) return false;
-            return randoms.get(s).getCount() == 0;
-        });
         randoms.forEach((s, countedRandom) -> tag.put(s, countedRandom.toTag()));
         return tag;
+    }
+
+    public @NotNull Tag getSkullsTag() {
+        ListTag skulls = new ListTag();
+        for (String skullReroller : skullRerollers) skulls.add(StringTag.of(skullReroller));
+        return skulls;
     }
 
     public void tick(MinecraftServer thisServer) {
@@ -138,5 +163,9 @@ public class RNGManager {
 
     public CountedRandom getRandom(String key) {
         return randoms.computeIfAbsent(key, k -> new CountedRandom(mixSeed(key, worldSeed), 0));
+    }
+
+    public CountedRandom getSkullRandom(int looting) {
+        return getRandom(skullRerollers[looting]);
     }
 }

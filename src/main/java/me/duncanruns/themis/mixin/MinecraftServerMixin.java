@@ -37,7 +37,8 @@ public abstract class MinecraftServerMixin implements RerollerServer {
     private void saveRerollerData(CallbackInfoReturnable<Boolean> cir) {
         MinecraftServer thisServer = (MinecraftServer) (Object) this;
         CompoundTag rerollerTag = new CompoundTag();
-        rerollerTag.put("RNGManager", rngManager.getTag());
+        rerollerTag.put("RNGManager", rngManager.getRandomsTag());
+        rerollerTag.put("SkullRerollers", rngManager.getSkullsTag());
         rerollerTag.put("SpawnerManager", spawnerManager.getTag());
         ((ThemisTagOwner) thisServer.getSaveProperties()).themis$setTag(rerollerTag);
     }

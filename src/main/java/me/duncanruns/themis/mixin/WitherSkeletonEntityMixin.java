@@ -24,8 +24,7 @@ public abstract class WitherSkeletonEntityMixin extends AbstractSkeletonEntity {
         super.dropLoot(source, causedByPlayer);
         if (!causedByPlayer) return;
         int looting = ThemisMod.getLooting(source.getAttacker());
-        String rngId = ThemisMod.SKULL_REROLLERS[MathHelper.clamp(looting, 0, 3)];
-        CountedRandom random = RNGManager.getRandom(getServer(), rngId);
+        CountedRandom random = RNGManager.getSkullRandom(getServer(), MathHelper.clamp(looting, 0, 3));
         if (random.nextFloat() < 0.025f + 0.01f * looting) {
             dropStack(new ItemStack(Items.WITHER_SKELETON_SKULL, 1));
         }

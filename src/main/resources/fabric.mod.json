@@ -25,5 +25,10 @@
 	],
 	"depends": {
 		"minecraft": "~1.16.1"
+	},
+	"custom": {
+		"speedrunapi": {
+			"screen": "me.duncanruns.themis.srapiimpl.ThemisConfigScreenProvider"
+		}
 	}
 }
