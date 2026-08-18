@@ -32,6 +32,10 @@ public class RNGManager {
     private String[] skullRerollers = new String[]{"skulls/1", "skulls/2", "skulls/3", "skulls/4"};
     private volatile Reroller currentlyRerolling = null;
     private final long worldSeed;
+    private final String RANDOMS_TAG_NAME = "randoms";
+    private final String SKULL_REROLLERS_TAG_NAME = "skull_rerollers";
+    private final String SEQUENCE_OVERRIDES_TAG_NAME = "sequence_overrides";
+    private final String SEQUENCE_OVERRIDES_LOOPING_TAG_NAME = "sequence_overrides_looping";
 
     {
         remakeSequenceOverrides();
@@ -100,16 +104,16 @@ public class RNGManager {
     public void load(MinecraftServer server) {
         Set<String> alreadyLoaded = new HashSet<>();
         CompoundTag themisTag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
-        if (themisTag.contains("RNGManager")) {
-            CompoundTag tag = themisTag.getCompound("RNGManager");
+        if (themisTag.contains(RANDOMS_TAG_NAME)) {
+            CompoundTag tag = themisTag.getCompound(RANDOMS_TAG_NAME);
             tag.getKeys()
                     .forEach(s -> {
                         randoms.put(s, CountedRandom.fromTag(tag.getCompound(s)));
                         alreadyLoaded.add(s);
                     });
         }
-        if (themisTag.contains("SkullRerollers")) {
-            ListTag tag = themisTag.getList("SkullRerollers", 8);
+        if (themisTag.contains(SKULL_REROLLERS_TAG_NAME)) {
+            ListTag tag = themisTag.getList(SKULL_REROLLERS_TAG_NAME, 8);
             skullRerollers = new String[4];
             for (int i = 0; i < tag.size(); i++) {
                 skullRerollers[i] = tag.asString();
@@ -125,8 +129,8 @@ public class RNGManager {
             });
         }
 
-        if (themisTag.contains("SequenceOverrides")) {
-            CompoundTag tag = themisTag.getCompound("SequenceOverrides");
+        if (themisTag.contains(SEQUENCE_OVERRIDES_TAG_NAME)) {
+            CompoundTag tag = themisTag.getCompound(SEQUENCE_OVERRIDES_TAG_NAME);
             sequenceOverrides = new HashMap<>();
             for (String key : tag.getKeys()) {
                 List<String> sequence = tag.getList(key, 8).stream()
@@ -136,8 +140,8 @@ public class RNGManager {
             }
             remakeSequenceOverrides();
         }
-        if (themisTag.contains("SequenceOverridesLooping")) {
-            ListTag tag = themisTag.getList("SequenceOverridesLooping", 8);
+        if (themisTag.contains(SEQUENCE_OVERRIDES_LOOPING_TAG_NAME)) {
+            ListTag tag = themisTag.getList(SEQUENCE_OVERRIDES_LOOPING_TAG_NAME, 8);
             sequenceOverridesLooping = new HashSet<>();
             for (Tag t : tag) {
                 sequenceOverridesLooping.add(t.asString());
@@ -270,9 +274,9 @@ public class RNGManager {
     }
 
     public void addTags(CompoundTag tag) {
-        tag.put("RNGManager", getRandomsTag());
-        tag.put("SkullRerollers", getSkullsTag());
-        tag.put("SequenceOverrides", getSequenceOverridesTag());
-        tag.put("SequenceOverridesLooping", getSequenceOverridesLoopingTag());
+        tag.put(RANDOMS_TAG_NAME, getRandomsTag());
+        tag.put(SKULL_REROLLERS_TAG_NAME, getSkullsTag());
+        tag.put(SEQUENCE_OVERRIDES_TAG_NAME, getSequenceOverridesTag());
+        tag.put(SEQUENCE_OVERRIDES_LOOPING_TAG_NAME, getSequenceOverridesLoopingTag());
     }
 }
