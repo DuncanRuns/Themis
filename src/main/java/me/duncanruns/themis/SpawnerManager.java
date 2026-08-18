@@ -48,7 +48,7 @@ public class SpawnerManager {
         spawnerTag.getKeys().forEach(s -> nextSpawnTimes.put(s, spawnerTag.getInt(s)));
     }
 
-    public CompoundTag getTag() {
+    private CompoundTag getTag() {
         CompoundTag tag = new CompoundTag();
         nextSpawnTimes.forEach(tag::putInt);
         return tag;
@@ -56,5 +56,9 @@ public class SpawnerManager {
 
     public int getCount(String entityId) {
         return getSpawnerCooldownRandom(entityId).getCount();
+    }
+
+    public void addTags(CompoundTag tag) {
+        tag.put("SpawnerManager", getTag());
     }
 }
