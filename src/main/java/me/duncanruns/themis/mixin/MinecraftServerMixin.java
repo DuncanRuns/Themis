@@ -36,13 +36,10 @@ public abstract class MinecraftServerMixin implements RerollerServer {
     @Inject(method = "save(ZZZ)Z", at = @At("HEAD"))
     private void saveRerollerData(CallbackInfoReturnable<Boolean> cir) {
         MinecraftServer thisServer = (MinecraftServer) (Object) this;
-        CompoundTag rerollerTag = new CompoundTag();
-        rerollerTag.put("RNGManager", rngManager.getRandomsTag());
-        rerollerTag.put("SkullRerollers", rngManager.getSkullsTag());
-        rerollerTag.put("SequenceOverrides", rngManager.getSequenceOverridesTag());
-        rerollerTag.put("SequenceOverridesLooping", rngManager.getSequenceOverridesLoopingTag());
-        rerollerTag.put("SpawnerManager", spawnerManager.getTag());
-        ((ThemisTagOwner) thisServer.getSaveProperties()).themis$setTag(rerollerTag);
+        CompoundTag tag = new CompoundTag();
+        rngManager.addTags(tag);
+        tag.put("SpawnerManager", spawnerManager.getTag());
+        ((ThemisTagOwner) thisServer.getSaveProperties()).themis$setTag(tag);
     }
 
     @Inject(method = "tickWorlds", at = @At("HEAD"))

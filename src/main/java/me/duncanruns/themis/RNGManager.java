@@ -179,19 +179,19 @@ public class RNGManager {
         }
     }
 
-    public @NotNull Tag getRandomsTag() {
+    private @NotNull Tag getRandomsTag() {
         CompoundTag tag = new CompoundTag();
         randoms.forEach((s, countedRandom) -> tag.put(s, countedRandom.toTag()));
         return tag;
     }
 
-    public @NotNull Tag getSkullsTag() {
+    private @NotNull Tag getSkullsTag() {
         ListTag skulls = new ListTag();
         for (String skullReroller : skullRerollers) skulls.add(StringTag.of(skullReroller));
         return skulls;
     }
 
-    public @NotNull Tag getSequenceOverridesTag() {
+    private @NotNull Tag getSequenceOverridesTag() {
         CompoundTag tag = new CompoundTag();
         for (Map.Entry<String, List<String>> e : sequenceOverrides.entrySet()) {
             ListTag stringListTag = new ListTag();
@@ -203,7 +203,7 @@ public class RNGManager {
         return tag;
     }
 
-    public @NotNull Tag getSequenceOverridesLoopingTag() {
+    private @NotNull Tag getSequenceOverridesLoopingTag() {
         ListTag tag = new ListTag();
         sequenceOverridesLooping.forEach(s -> tag.add(StringTag.of(s)));
         return tag;
@@ -267,5 +267,12 @@ public class RNGManager {
 
     private static ItemStack itemStackFromString(String string, int count) throws CommandSyntaxException {
         return new ItemStackArgumentType().parse(new StringReader(string)).createStack(count, false);
+    }
+
+    public void addTags(CompoundTag tag) {
+        tag.put("RNGManager", getRandomsTag());
+        tag.put("SkullRerollers", getSkullsTag());
+        tag.put("SequenceOverrides", getSequenceOverridesTag());
+        tag.put("SequenceOverridesLooping", getSequenceOverridesLoopingTag());
     }
 }
