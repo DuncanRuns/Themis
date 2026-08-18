@@ -13,6 +13,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 
+import java.util.List;
+import java.util.Optional;
+
 @Mixin(WitherSkeletonEntity.class)
 public abstract class WitherSkeletonEntityMixin extends AbstractSkeletonEntity {
     protected WitherSkeletonEntityMixin(EntityType<? extends AbstractSkeletonEntity> entityType, World world) {
@@ -23,8 +26,13 @@ public abstract class WitherSkeletonEntityMixin extends AbstractSkeletonEntity {
     protected void dropLoot(DamageSource source, boolean causedByPlayer) {
         super.dropLoot(source, causedByPlayer);
         if (!causedByPlayer) return;
-        int looting = ThemisMod.getLooting(source.getAttacker());
-        CountedRandom random = RNGManager.getSkullRandom(getServer(), MathHelper.clamp(looting, 0, 3));
+        int looting = MathHelper.clamp(ThemisMod.getLooting(source.getAttacker()), 0, 3);
+        Optional<List<ItemStack>> skullItemOverrideOpt = RNGManager.getSkullItemOverride(getServer(), looting);
+        if (skullItemOverrideOpt.isPresent()) {
+            skullItemOverrideOpt.get().forEach(this::dropStack);
+            return;
+        }
+        CountedRandom random = RNGManager.getSkullRandom(getServer(), looting);
         if (random.nextFloat() < 0.025f + 0.01f * looting) {
             dropStack(new ItemStack(Items.WITHER_SKELETON_SKULL, 1));
         }

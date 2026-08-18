@@ -3,6 +3,7 @@ package me.duncanruns.themis;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import me.duncanruns.themis.rerollers.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -36,6 +37,8 @@ public class ThemisMod implements ModInitializer {
     public static final Map<String, JsonObject> REROLLER_CONFIGS = new HashMap<>();
     public static final Map<String, Long> PRE_SET_SEEDS = new HashMap<>();
     public static final String[] SKULL_REROLLERS = new String[4];
+    public static Map<String, List<String>> SEQUENCE_OVERRIDES = Collections.emptyMap();
+    public static Set<String> SEQUENCE_OVERRIDES_LOOPING = Collections.emptySet();
     // ---
 
     public static final Map<String, Supplier<Reroller>> REROLLERS = new HashMap<>();
@@ -118,17 +121,34 @@ public class ThemisMod implements ModInitializer {
     public static int loadConfigString(String config) {
         clearConfig();
         int out = 0;
-        JsonObject configJson = new Gson().fromJson(config, JsonObject.class);
+        Gson gson = new Gson();
+        JsonObject configJson = gson.fromJson(config, JsonObject.class);
         if (configJson.has("skull_rerollers"))
             out += loadSkullConfig(configJson.getAsJsonObject("skull_rerollers"));
         if (configJson.has("rerollers"))
             out += loadRerollersConfig(configJson.getAsJsonObject("rerollers"));
+        if (configJson.has("sequence_overrides")) {
+            out += loadSequenceOverridesConfig(gson, configJson);
+        }
+        return out;
+    }
+
+    private static int loadSequenceOverridesConfig(Gson gson, JsonObject configJson) {
+        int out = 0;
+        SequeunceConfigContainer scc = gson.fromJson(configJson, SequeunceConfigContainer.class);
+        if (scc.sequenceOverrides != null) SEQUENCE_OVERRIDES = scc.sequenceOverrides;
+        if (scc.sequenceOverridesLooping != null) SEQUENCE_OVERRIDES_LOOPING = scc.sequenceOverridesLooping;
+        else {
+            LOGGER.error("Invalid sequence_overrides object!");
+            out++;
+        }
         return out;
     }
 
     private static void clearConfig() {
         REROLLER_CONFIGS.clear();
         PRE_SET_SEEDS.clear();
+        SEQUENCE_OVERRIDES = Collections.emptyMap();
         for (int i = 0; i < 4; i++) SKULL_REROLLERS[i] = "skulls/" + i;
     }
 
@@ -246,5 +266,12 @@ public class ThemisMod implements ModInitializer {
                     .map(s -> s.substring(0, s.length() - 5))
                     .collect(Collectors.toSet());
         }
+    }
+
+    public static final class SequeunceConfigContainer {
+        @SerializedName("sequence_overrides")
+        public Map<String, List<String>> sequenceOverrides = null;
+        @SerializedName("sequence_overrides_enable_looping")
+        public Set<String> sequenceOverridesLooping = null;
     }
 }

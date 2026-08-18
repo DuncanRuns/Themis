@@ -29,11 +29,12 @@ public abstract class PiglinBrainMixin {
         assert server != null;
         Identifier lootTableId = LootTables.PIGLIN_BARTERING_GAMEPLAY;
         LootTable lootTable = server.getLootManager().getTable(lootTableId);
-        return lootTable.generateLoot(
+        String lootTableIdString = lootTableId.toString();
+        return RNGManager.getItemOverride(server, lootTableIdString).orElseGet(() -> lootTable.generateLoot(
                 new LootContext.Builder((ServerWorld) piglin.world)
                         .parameter(LootContextParameters.THIS_ENTITY, piglin)
-                        .random(RNGManager.getRandom(server, lootTableId.toString()))
-                        .build(LootContextTypes.BARTER)
+                        .random(RNGManager.getRandom(server, lootTableIdString))
+                        .build(LootContextTypes.BARTER))
         );
     }
 }
