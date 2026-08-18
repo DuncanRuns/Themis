@@ -15,6 +15,8 @@ public class SpawnerManager {
     private final RNGManager rngManager;
     private final Map<String, Integer> nextSpawnTimes = new HashMap<>();
 
+    private static final String TAG_NAME = "next_spawn_times";
+
     public SpawnerManager(RNGManager rngManager) {
         this.rngManager = rngManager;
     }
@@ -43,8 +45,8 @@ public class SpawnerManager {
 
     public void load(MinecraftServer server) {
         CompoundTag tag = ((ThemisTagOwner) server.getSaveProperties()).themis$getTag();
-        if (!tag.contains("SpawnerManager")) return;
-        CompoundTag spawnerTag = tag.getCompound("SpawnerManager");
+        if (!tag.contains(TAG_NAME)) return;
+        CompoundTag spawnerTag = tag.getCompound(TAG_NAME);
         spawnerTag.getKeys().forEach(s -> nextSpawnTimes.put(s, spawnerTag.getInt(s)));
     }
 
@@ -59,6 +61,6 @@ public class SpawnerManager {
     }
 
     public void save(CompoundTag tag) {
-        tag.put("SpawnerManager", getTag());
+        tag.put(TAG_NAME, getTag());
     }
 }
