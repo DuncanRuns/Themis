@@ -273,7 +273,7 @@ public class RNGManager {
         return new ItemStackArgumentType().parse(new StringReader(string)).createStack(count, false);
     }
 
-    public void addTags(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.put(RANDOMS_TAG_NAME, getRandomsTag());
         tag.put(SKULL_REROLLERS_TAG_NAME, getSkullsTag());
         tag.put(SEQUENCE_OVERRIDES_TAG_NAME, getSequenceOverridesTag());

@@ -58,7 +58,7 @@ public class SpawnerManager {
         return getSpawnerCooldownRandom(entityId).getCount();
     }
 
-    public void addTags(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.put("SpawnerManager", getTag());
     }
 }
