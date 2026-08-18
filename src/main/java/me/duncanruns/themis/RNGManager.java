@@ -116,7 +116,7 @@ public class RNGManager {
             ListTag tag = themisTag.getList(SKULL_REROLLERS_TAG_NAME, 8);
             skullRerollers = new String[4];
             for (int i = 0; i < tag.size(); i++) {
-                skullRerollers[i] = tag.asString();
+                skullRerollers[i] = tag.get(i).asString();
             }
         } else {
             skullRerollers = ThemisMod.SKULL_REROLLERS;
