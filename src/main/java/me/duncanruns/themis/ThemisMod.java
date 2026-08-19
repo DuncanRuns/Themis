@@ -136,11 +136,11 @@ public class ThemisMod implements ModInitializer {
     private static int loadSequenceOverridesConfig(Gson gson, JsonObject configJson) {
         int out = 0;
         SequeunceConfigContainer scc = gson.fromJson(configJson, SequeunceConfigContainer.class);
-        if (scc.sequenceOverrides != null) SEQUENCE_OVERRIDES = scc.sequenceOverrides;
-        if (scc.sequenceOverridesLooping != null) SEQUENCE_OVERRIDES_LOOPING = scc.sequenceOverridesLooping;
-        else {
-            LOGGER.error("Invalid sequence_overrides object!");
-            out++;
+        if (scc.sequenceOverrides != null) {
+            SEQUENCE_OVERRIDES = scc.sequenceOverrides;
+            if (scc.sequenceOverridesLooping != null) {
+                SEQUENCE_OVERRIDES_LOOPING = scc.sequenceOverridesLooping;
+            }
         }
         return out;
     }
